@@ -918,7 +918,8 @@ function buildRank(){
 /* ===== 3D ===== */
 var stage=document.getElementById("stage"), cv=document.getElementById("gl");
 var renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio||1,1.5),2));
+var ANISO=Math.min(8,renderer.capabilities.getMaxAnisotropy()||1), MAXTEX=renderer.capabilities.maxTextureSize||2048;
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 var scene=new THREE.Scene();
 scene.fog=new THREE.Fog(0xCBDCEA,900,5200);
@@ -940,7 +941,7 @@ scene.add(sky);
 var hemi=new THREE.HemisphereLight(0xB9CFE4,0x6E675C,0.42); scene.add(hemi);
 var ambient=new THREE.AmbientLight(0xE8EDF2,0.15); scene.add(ambient);
 var sunL=new THREE.DirectionalLight(0xFFF0D6,1.5);
-sunL.castShadow=true; sunL.shadow.mapSize.set(2048,2048); sunL.shadow.bias=-0.0006;
+sunL.castShadow=true; sunL.shadow.mapSize.set(Math.min(4096,MAXTEX),Math.min(4096,MAXTEX)); sunL.shadow.bias=-0.0006;
 sunL.shadow.camera.near=1; sunL.shadow.camera.far=2400;
 scene.add(sunL); scene.add(sunL.target);
 function setShadowSpan(s){ var c=sunL.shadow.camera;
@@ -949,8 +950,8 @@ setShadowSpan(240);
 
 /* ---- 입면 텍스처 : 1베이(3.45m) × 1층(2.9m) ---- */
 function facadeTexture(kind,accent){
-  var W=128,H=108, c=document.createElement("canvas"); c.width=W; c.height=H;
-  var g=c.getContext("2d");
+  var W=128,H=108, c=document.createElement("canvas"); c.width=W*2; c.height=H*2;
+  var g=c.getContext("2d"); g.scale(2,2);
   g.fillStyle="#CFC8BC"; g.fillRect(0,0,W,H);
   g.fillStyle="rgba(120,112,100,.20)"; g.fillRect(0,H-4,W,4);       /* 슬래브 라인 */
   g.fillStyle="rgba(255,255,255,.55)"; g.fillRect(0,H-7,W,3);
@@ -974,7 +975,7 @@ function facadeTexture(kind,accent){
     g.fillStyle="rgba(120,112,100,.18)"; g.fillRect(W/2-8,0,16,H);
   }
   var t=new THREE.CanvasTexture(c);
-  t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4;
+  t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=ANISO;
   return t;
 }
 var TEX={front:{},side:facadeTexture("side"),back:facadeTexture("back")};
@@ -988,14 +989,15 @@ var MAT_BASE=new THREE.MeshLambertMaterial({color:0x6E7378});
 
 var groupOf={}, LABELS=[], PINS=[];
 function bldgLabel(text,size,strong){
-  var c=document.createElement("canvas"); c.width=256; c.height=72;
-  var g=c.getContext("2d");
+  var c=document.createElement("canvas"); c.width=512; c.height=144;
+  var g=c.getContext("2d"); g.scale(2,2);
   g.fillStyle=strong?"rgba(208,117,32,.96)":"rgba(255,255,255,.92)";
   if(g.roundRect){ g.beginPath(); g.roundRect(6,10,244,52,10); g.fill(); } else g.fillRect(6,10,244,52);
   g.strokeStyle=strong?"rgba(255,255,255,.7)":"#8A95A2"; g.lineWidth=2; g.strokeRect(6,10,244,52);
   g.fillStyle=strong?"#fff":"#171E27"; g.font="600 30px system-ui,sans-serif"; g.textAlign="center";
   g.fillText(text,128,48);
-  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+  var tx=new THREE.CanvasTexture(c); tx.anisotropy=ANISO;
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));
   sp.scale.set(size,size*72/256,1);
   return sp;
 }
@@ -1197,8 +1199,8 @@ function setCallout(text){
 /* 매물 핀 */
 var pinGroup=new THREE.Group(); scene.add(pinGroup);
 function pinSprite(L){
-  var c=document.createElement("canvas"); c.width=190; c.height=62;
-  var g=c.getContext("2d");
+  var c=document.createElement("canvas"); c.width=380; c.height=124;
+  var g=c.getContext("2d"); g.scale(2,2);
   g.fillStyle=TCOL[cxOf(L[0])+"-"+L[2]];
   if(g.roundRect){ g.beginPath(); g.roundRect(2,2,186,42,9); g.fill(); } else g.fillRect(2,2,186,42);
   g.beginPath(); g.moveTo(85,44); g.lineTo(105,44); g.lineTo(95,60); g.closePath(); g.fill();
@@ -1321,7 +1323,7 @@ function planTex(tk){
   if(!PLAN_TEX[tk]){
     var img=new Image(), t=new THREE.Texture(img);
     img.onload=function(){ t.needsUpdate=true; if(typeof render==="function") render(); };
-    img.src=PLANS[tk].tex; t.anisotropy=4;
+    img.src=PLANS[tk].tex; t.anisotropy=ANISO;
     PLAN_TEX[tk]=new THREE.MeshBasicMaterial({map:t,side:THREE.DoubleSide});
   }
   return PLAN_TEX[tk];
