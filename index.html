@@ -1257,8 +1257,9 @@
         중개사에게 확인).
         납부 조건은 입주자모집공고 기준 — 더스텔라는 계약금 10%(1차 1천만원 + 2차 2025.10.15), 중도금 6회(2026.06.15 ~ 2028.10.16, 회당 10%), 잔금 30%(입주
         시), 더스카이는 계약금 10%(5%+5%, 2024.11.25까지), 중도금 6회(2025.06.10 ~ 2027.12.10), 잔금 30%(입주 시)야. 두 단지 모두 전매제한 없음.
-        "지금 계약하면 내 돈"은 분양권을 사는 경우의 대략적인 현금으로, <b>프리미엄 + 옵션·확장비 + 이미 낸 계약금</b>이고 중도금은 집단대출을 승계한다고 가정한 값이야. 접속한 날짜를 기준으로
-        납부 완료 회차를 계산해. 취득세·중개수수료는 포함하지 않았어.</p>
+        <b>옵션·확장비(발코니 확장, 시스템에어컨, 추가선택품목)는 분양대금과 따로</b> 계약금 10%(계약 시) · 중도금 10%(더스텔라 2026.06.15, 더스카이 2025.06.10) · 잔금 80%(입주 시)로 내(더스텔라 공고 50쪽, 더스카이 37·42쪽).
+        "지금 계약하면 내 돈"은 분양권을 사는 경우의 대략적인 현금으로, <b>프리미엄 + 옵션 중 이미 지난 회차(20%) + 이미 낸 분양 계약금</b>이고 분양 중도금은 집단대출을 승계한다고 가정한 값이야.
+        옵션 나머지 80%는 입주 때 시공사에 내는 돈이라 "이후 낼 돈"에 넣었어. 접속한 날짜를 기준으로 납부 완료 회차를 계산하고, 취득세·중개수수료는 포함하지 않았어.</p>
       <p><b>태양</b> NOAA 태양위치 알고리즘, 북위 37.313°·동경 127.921°. 하지 남중고도 76.1°, 동지 29.3°로 이론값과 일치. 창면 일사는 청천공(구름 없음) 직달일사 모델이라
         흐린 날은 이보다 적어.</p>
       <p><b>주변</b> 남원주역세권 A-6 행복주택 601·602동(435세대·2023.9 준공)은 지도 실측 좌표로 넣었고(더스텔라 남서 137m / 남동 156m), 원주역 중흥S클래스(북
@@ -1327,8 +1328,9 @@
          출처 : 입주자모집공고문 '공급금액 표' — 더스텔라(정정공고 2025.08.08) · 더스카이(2024.09.20).
          계약금 10% · 중도금 6회(회당 10%, 10만원 단위 내림) · 잔금 30%(입주 시). 단위는 모두 만원. */
       var PAYDEF = {
-        S: { c: ["2025-09-11", "2025-10-15"], c1: 1000, mid: ["2026-06-15", "2026-12-15", "2027-06-15", "2028-01-17", "2028-05-15", "2028-10-16"], fin: "2029-05" },
-        K: { c: ["2024-10-24", "2024-11-25"], c1: null, mid: ["2025-06-10", "2025-12-10", "2026-06-10", "2027-03-10", "2027-08-10", "2027-12-10"], fin: "2028-08" }
+        /* o : 발코니 확장·시스템에어컨·추가선택품목은 분양대금과 따로 계약금10%(계약 시) · 중도금10%(1회) · 잔금80%(입주 시) */
+        S: { c: ["2025-09-11", "2025-10-15"], c1: 1000, mid: ["2026-06-15", "2026-12-15", "2027-06-15", "2028-01-17", "2028-05-15", "2028-10-16"], fin: "2029-05", o: ["2025-09-11", "2026-06-15"] },
+        K: { c: ["2024-10-24", "2024-11-25"], c1: null, mid: ["2025-06-10", "2025-12-10", "2026-06-10", "2027-03-10", "2027-08-10", "2027-12-10"], fin: "2028-08", o: ["2024-10-24", "2025-06-10"] }
       };
       function fmtMan(v) { v = Math.round(v); return Math.abs(v) >= 10000 ? (v / 10000).toFixed(2) + "억" : v.toLocaleString() + "만"; }
       function paySchedule(L) {
@@ -1351,11 +1353,16 @@
           else fin = r.v;
         });
         var optPos = Math.max(0, opt);
+        /* 옵션·확장비는 분양대금과 따로 계약금10% → 중도금10% → 잔금80%(입주 시)로 낸다. 이미 지난 회차는 매도자가 낸 것이라 매수자가 정산한다. */
+        var D = PAYDEF[cxOf(L[0])], today = new Date().toISOString().slice(0, 10);
+        var o1 = Math.round(optPos * 0.10), o2 = Math.round(optPos * 0.10), o3 = optPos - o1 - o2;
+        var optPaid = (D.o[0] <= today ? o1 : 0) + (D.o[1] <= today ? o2 : 0), optLeft = optPos - optPaid;
         return {
           P: P, prem: prem, ask: ask, opt: opt, optPos: optPos, rows: rows, cPaid: cPaid, cLeft: cLeft, mPaid: mPaid, mLeft: mLeft, fin: fin, next: next,
-          cashLoan: prem + optPos + cPaid,            /* 중도금대출을 그대로 승계한다고 볼 때 */
-          cashAll: prem + optPos + cPaid + mPaid
-        };      /* 이미 낸 중도금도 내 돈으로 낼 때 */
+          optPaid: optPaid, optLeft: optLeft, optRows: [["옵션 계약금 10%", D.o[0], o1], ["옵션 중도금 10%", D.o[1], o2], ["옵션 잔금 80% (입주 시)", D.fin, o3]],
+          cashLoan: prem + optPaid + cPaid,            /* 중도금대출을 그대로 승계한다고 볼 때 : 프리미엄 + 옵션 기납부분 + 낸 계약금 */
+          cashAll: prem + optPaid + cPaid + mPaid      /* 이미 낸 중도금도 내 돈으로 낼 때 */
+        };
       }
       function priceHTML(L) {
         var q = priceInfo(L), tot = q.P + q.optPos + q.prem || 1;
@@ -1370,15 +1377,19 @@
           '<tr class="sum"><td>호가 (총 매수가)</td><td>' + fmtMan(q.ask) + '</td></tr></table>' +
           (q.opt < 0 ? '<div class="note">호가가 분양가+프리미엄보다 낮아 옵션·확장비는 0으로 봤어요.</div>' : '') +
           '<div class="cash"><div class="r"><span>지금 계약하면 내 돈 <small>(중도금대출 승계)</small></span><span class="big">' + fmtMan(q.cashLoan) + '</span></div>' +
-          '<div class="r"><span>프리미엄 ' + fmtMan(q.prem) + ' + 옵션 ' + fmtMan(q.optPos) + ' + 낸 계약금 ' + fmtMan(q.cPaid) + '</span></div>' +
+          '<div class="r"><span>프리미엄 ' + fmtMan(q.prem) + ' + 옵션 이미 낸 분 ' + fmtMan(q.optPaid) + ' + 낸 계약금 ' + fmtMan(q.cPaid) + '</span></div>' +
           (q.mPaid > 0 ? '<div class="r sub2"><span>이미 낸 중도금 ' + fmtMan(q.mPaid) + '까지 현금이면</span><b>' + fmtMan(q.cashAll) + '</b></div>' : '') +
-          '<div class="r sub2"><span>이후 낼 돈 (중도금 ' + fmtMan(q.mLeft) + ' + 잔금 ' + fmtMan(q.fin) + (q.cLeft > 0 ? ' + 계약금 ' + fmtMan(q.cLeft) : '') + ')</span><b>' + fmtMan(q.mLeft + q.fin + q.cLeft) + '</b></div>' +
+          '<div class="r sub2"><span>이후 낼 돈 (중도금 ' + fmtMan(q.mLeft) + ' + 잔금 ' + fmtMan(q.fin) + ' + 옵션 나머지 ' + fmtMan(q.optLeft) + (q.cLeft > 0 ? ' + 계약금 ' + fmtMan(q.cLeft) : '') + ')</span><b>' + fmtMan(q.mLeft + q.fin + q.optLeft + q.cLeft) + '</b></div>' +
           (q.next ? '<div class="r sub2"><span>다음 납부 ' + q.next.d + ' · ' + q.next.n + '</span><b>' + fmtMan(q.next.v) + '</b></div>' : '') +
           '</div>' +
           '<details><summary>분양대금 납부 일정 (분양가 기준)</summary><table class="pt2">' +
           q.rows.map(function (r) { return '<tr class="' + (r.paid ? 'done' : '') + '"><td>' + r.n + '</td><td>' + r.d + '</td><td>' + fmtMan(r.v) + '</td><td>' + (r.paid ? '납부' : (r.k === "f" ? '입주' : '예정')) + '</td></tr>'; }).join('') +
-          '</table></details>' +
-          '<div class="note">계약금10% · 중도금6회 · 잔금30%는 입주자모집공고 기준이에요. 중도금대출 승계 가능 여부, 취득세·중개수수료·확장비 정산 방식은 매도자·시공사·은행에 확인이 필요해요.</div></div>';
+          '</table>' +
+          (q.optPos > 0 ? '<div class="note" style="margin-top:8px"><b>옵션·확장비 납부</b> (분양대금과 별도 계좌·일정)</div><table class="pt2">' +
+            q.optRows.map(function (r, i) { var paid = (i < 2 && r[1] <= new Date().toISOString().slice(0, 10)); return '<tr class="' + (paid ? 'done' : '') + '"><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + fmtMan(r[2]) + '</td><td>' + (paid ? '납부' : (i === 2 ? '입주' : '예정')) + '</td></tr>'; }).join('') +
+            '</table>' : '') +
+          '</details>' +
+          '<div class="note">분양대금은 계약금10% · 중도금6회 · 잔금30%, 옵션·확장비는 계약금10% · 중도금10% · 잔금80%(입주 시)로 입주자모집공고에 정해져 있어요. 이미 지난 회차는 매도자가 낸 것이라 승계 때 정산해요. 중도금대출 승계 가능 여부, 취득세·중개수수료는 매도자·시공사·은행에 확인이 필요해요.</div></div>';
         return h2;
       }
 
