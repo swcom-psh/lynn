@@ -36,6 +36,7 @@
 
 <body>
   <title>원주 우미린 스텔라, 스카이 조망도 시뮬레이션 프로그램</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
@@ -538,6 +539,13 @@
       right: -14px
     }
 
+    #vsplit {
+      right: 12px; top: 12px; display: flex; gap: 2px; background: rgba(255, 255, 255, .94); border: 1px solid var(--line);
+      border-radius: 8px; padding: 3px; pointer-events: auto; z-index: 6; box-shadow: 0 1px 4px rgba(20, 30, 45, .12)
+    }
+    #vsplit[hidden] { display: none }
+    #vsplit button { background: none; border: 0; padding: 5px 11px; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--fg2); cursor: pointer; white-space: nowrap }
+    #vsplit button[aria-pressed="true"] { background: var(--sun); color: #fff }
     #viewbadge {
       right: 12px;
       bottom: 12px;
@@ -1068,10 +1076,150 @@
       }
     }
   </style>
+  <style id="v2">
+    /* ===== 디자인 v2 : 무채색 + 주황 하나, Pretendard, 8px 간격 체계 ===== */
+    :root {
+      --paper: #F2F4F6; --panel: #FFFFFF; --panel2: #F4F6F8; --line: #E8EBEF; --line2: #D5DAE0;
+      --fg: #191F28; --fg2: #4E5968; --fg3: #6B7684;
+      --sun: #E1660A; --sun-ink: #B4530A; --sun-soft: #FFF3E8; --sky: #3182F6;
+      --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+      --mono: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body { font-size: 13.5px; letter-spacing: -.1px; font-variant-numeric: tabular-nums; background: var(--paper) }
+
+    /* 상단 바 */
+    #top { min-height: 56px; padding: 0 20px; gap: 16px; background: #fff; border-bottom: 1px solid var(--line) }
+    #top h1 { font-size: 16px; font-weight: 700; letter-spacing: -.4px; white-space: nowrap }
+    #top h1 span { font-weight: 500; color: var(--fg3); font-size: 13.5px; margin-left: 6px; letter-spacing: -.2px }
+    .meta { gap: 14px; font-size: 12.5px; color: var(--fg3) }
+    .meta b { font-weight: 600; color: var(--fg2) }
+    .meta span:first-child { display: none }
+    #calcState { display: inline-flex; align-items: center; gap: 6px }
+    #calcState::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #20A464 }
+    .modes { background: var(--panel2); border: 0; border-radius: 10px; padding: 3px; gap: 2px }
+    .modes button { border-radius: 8px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; color: var(--fg3) }
+    .modes button[aria-pressed="true"] { background: #fff; color: var(--fg); box-shadow: 0 1px 3px rgba(25, 31, 40, .12) }
+    .ghost { border: 0; background: var(--panel2); border-radius: 8px; padding: 9px 13px; font-size: 13px; color: var(--fg2); font-weight: 500 }
+    .ghost:hover { background: var(--line); color: var(--fg) }
+
+    /* 좌우 패널 */
+    aside { background: #fff }
+    #list { border-right: 1px solid var(--line) }
+    #info { border-left: 1px solid var(--line); background: var(--paper) }
+    .sec { padding: 18px 20px; border-bottom: 0; background: #fff }
+    #info .sec { margin-bottom: 8px }
+    .sec-h { margin-bottom: 12px; align-items: baseline }
+    .sec-h h2 { font-size: 15px; font-weight: 700; color: var(--fg); letter-spacing: -.3px; text-transform: none }
+    .sec-h em { font-style: normal; font-size: 12.5px; color: var(--fg3) }
+
+    /* 칩 · 필터 */
+    .filters { gap: 6px }
+    .chip { height: 32px; padding: 0 12px; border-radius: 16px; border: 1px solid var(--line2); background: #fff; color: var(--fg2); font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px }
+    .chip:hover { border-color: var(--fg3) }
+    .chip[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: #fff }
+    .chip .sw { width: 8px; height: 8px; border-radius: 50%; margin: 0 }
+    details.more { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px }
+    details.more summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--fg2); list-style: none; display: flex; align-items: center; gap: 6px }
+    details.more summary::-webkit-details-marker { display: none }
+    details.more summary::after { content: "▾"; color: var(--fg3); font-size: 11px }
+    details.more[open] summary::after { content: "▴" }
+    details.more[open] summary { margin-bottom: 10px }
+    #sortFilters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line) }
+    #sortFilters::-webkit-scrollbar { display: none }
+    #sortFilters .chip { height: 28px; padding: 0 10px; font-size: 12.5px; border: 0; background: var(--panel2); color: var(--fg3); white-space: nowrap; flex: none }
+    #sortFilters .chip[aria-pressed="true"] { background: var(--sun-soft); color: var(--sun-ink); font-weight: 600 }
+
+    /* 세대 목록 : 두 줄 */
+    .rows { padding: 0 }
+    .row { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 14px 20px; border: 0; border-bottom: 1px solid var(--line); background: #fff; text-align: left; width: 100%; cursor: pointer; border-left: 0 }
+    .row:hover { background: var(--panel2) }
+    .row[aria-current="true"] { background: var(--sun-soft); box-shadow: inset 3px 0 0 var(--sun) }
+    .row.has:after { display: none }
+    .row .r1 { font-size: 14.5px; font-weight: 600; color: var(--fg); display: flex; align-items: center; gap: 7px; min-width: 0; white-space: nowrap; overflow: hidden }
+    .row .r1 .fl { font-weight: 500; color: var(--fg3); font-size: 13px }
+    .row .r1r { font-size: 14.5px; font-weight: 700; color: var(--fg); text-align: right; white-space: nowrap }
+    .row .r2 { font-size: 12.5px; color: var(--fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+    .row .r2r { font-size: 12.5px; color: var(--sun-ink); font-weight: 600; text-align: right; white-space: nowrap }
+    .row .dot { width: 8px; height: 8px; border-radius: 50%; flex: none }
+    .row .est { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--panel2); color: var(--fg3); font-weight: 500 }
+
+    /* 3D 화면 위 */
+    #readout { left: 16px; top: 16px; padding: 8px 12px; border: 0; border-radius: 10px; background: rgba(255, 255, 255, .94); box-shadow: 0 2px 10px rgba(25, 31, 40, .10); font-size: 12.5px; line-height: 1.4; color: var(--fg2) }
+    #readout .sunbadge { color: var(--sun-ink); font-weight: 600 }
+    #compass { width: 60px; height: 60px; top: 14px; right: 14px }
+    body:not([data-mode="living"]) #viewbadge { display: none !important }
+    #viewbadge { border: 0; border-radius: 12px; box-shadow: 0 2px 10px rgba(25, 31, 40, .12); background: rgba(255, 255, 255, .96); font-size: 12.5px; color: var(--fg2); padding: 10px 14px }
+    #hint { display: none !important }
+    #bl:hover #hint { display: block !important }
+    #hint { background: rgba(25, 31, 40, .78); color: #fff; border-radius: 8px; font-size: 12px }
+    #toggles { gap: 6px }
+    #toggles label { border: 0; background: rgba(255, 255, 255, .94); box-shadow: 0 1px 6px rgba(25, 31, 40, .10); border-radius: 16px; height: 32px; padding: 0 12px; font-size: 12.5px; color: var(--fg2); font-weight: 500 }
+    #selTag .card { background: var(--fg); border: 0; border-radius: 12px; padding: 9px 13px }
+    #selTag .card b { font-size: 14px; font-weight: 700 }
+    #selTag .card span { opacity: .85; font-size: 12px }
+    #selTag .ring { border-color: #fff; background: rgba(225, 102, 10, .35); box-shadow: 0 0 0 2px var(--sun) }
+    #selTag .pole { background: var(--fg) }
+    #vsplit { border: 0; box-shadow: 0 1px 6px rgba(25, 31, 40, .12); border-radius: 10px }
+    #vsplit button[aria-pressed="true"] { background: var(--fg) }
+
+    /* 오른쪽 정보 */
+    .pick select, .pick input { border: 1px solid var(--line2); border-radius: 8px; height: 38px; font-size: 13.5px; background: #fff }
+    .kv { gap: 8px 12px }
+    .kv dt { color: var(--fg3); font-size: 13px }
+    .kv dd { font-weight: 600; font-family: var(--sans); font-size: 13px }
+    .big { gap: 8px }
+    .big span { font-family: var(--sans); font-size: 26px; font-weight: 700; letter-spacing: -.6px; color: var(--fg) }
+    .big small { color: var(--fg3); font-size: 12px }
+    canvas.chart { background: var(--panel2); border-radius: 10px }
+    .legend { font-size: 12px; color: var(--fg3); gap: 12px }
+    .legend i { border-radius: 50% }
+    .verdict { background: none !important; border: 0 !important; padding: 0 0 0 14px; margin-top: 12px; position: relative; font-size: 13px; color: var(--fg2); line-height: 1.65 }
+    .verdict::before { content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--fg3) }
+    .verdict.good::before { background: #20A464 }
+    .verdict.mid::before { background: #E0A100 }
+    .verdict.poor::before { background: #E5484D }
+    .verdict b { color: var(--fg) }
+
+    /* 선택 매물 카드 */
+    #pickCard { background: #fff; padding: 20px; margin-bottom: 8px; border-bottom: 0 }
+    #pickCard .tag { border-radius: 6px; font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 2px 7px }
+    #pickCard .ttl { font-size: 17px; font-weight: 700; letter-spacing: -.4px }
+    #pickCard .pp { font-family: var(--sans); font-weight: 700; color: var(--sun-ink); font-size: 15px }
+    #pickCard .sub { color: var(--fg3); font-size: 12.5px }
+    #pickCard .hd { gap: 8px; flex-wrap: nowrap; align-items: center }
+    #pickCard .tag, #pickCard .pp { white-space: nowrap; flex: none }
+    #pickCard .ttl { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+    #app { grid-template-columns: 320px minmax(0, 1fr) 376px }
+    #pickCard .pay { border-top: 0; padding-top: 6px }
+    #pickCard .pbar { height: 8px; border-radius: 4px }
+    #pickCard .pt td { padding: 4px 0; font-size: 13px }
+    #pickCard .pt td:last-child { font-family: var(--sans); font-weight: 600 }
+    #pickCard .pt .sum td { font-size: 14.5px }
+    #pickCard .cash { border: 0; background: var(--sun-soft); border-radius: 12px; padding: 12px 14px }
+    #pickCard .cash .big { color: var(--sun-ink); font-family: var(--sans); font-size: 21px }
+    #pickCard .cash .sub2 b { font-family: var(--sans) }
+    #pickCard summary { font-size: 13px }
+    #pickCard .pt2 td:nth-child(3) { font-family: var(--sans) }
+
+    /* 하단 시간 막대 */
+    #bar { background: #fff; border-top: 1px solid var(--line); padding: 10px 20px; gap: 24px }
+    .slider label { color: var(--fg3); font-size: 12.5px }
+    .slider output { font-family: var(--sans); font-weight: 700; color: var(--fg); font-size: 14px }
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: var(--line2); accent-color: var(--sun) }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid var(--sun); box-shadow: 0 1px 4px rgba(0, 0, 0, .2); cursor: pointer }
+    input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid var(--sun); cursor: pointer }
+    .presets { gap: 6px }
+    .presets button { border: 0; background: var(--panel2); border-radius: 8px; height: 36px; padding: 0 12px; font-size: 13px; color: var(--fg2); font-weight: 500 }
+    .presets button:hover { background: var(--line); color: var(--fg) }
+    #play { background: var(--sun); color: #fff; font-weight: 700 }
+    #play:hover { background: var(--sun-ink); color: #fff }
+    #sheet .card { border-radius: 16px; padding: 28px 30px }
+    #sheet p { font-size: 13px; color: var(--fg2) }
+  </style>
 
   <div id="app">
     <header id="top">
-      <h1>원주역 우미린 <span>더스카이 + 더스텔라 일조·조망 시뮬레이션 프로그램</span></h1>
+      <h1>원주 우미린 <span>스텔라 · 스카이 일조·조망</span></h1>
       <div class="meta">
         <span>무실동 2002·2006 · <b>1,827</b>세대 · <b>10</b>개동 · 최고 <b>43</b>층</span>
         <span>매물 <b>157</b>건 / 중복제외 <b id="uniqN">98</b>건</span>
@@ -1091,12 +1239,15 @@
           <h2>세대 목록</h2><em id="filtCount"></em>
         </div>
         <div class="filters" id="onlyFilters"></div>
-        <div class="filters" style="margin-top:7px" id="cxFilters"></div>
-        <div class="filters" style="margin-top:7px" id="dongFilters"></div>
-        <div class="filters" style="margin-top:7px" id="typeFilters"></div>
-        <div class="filters" style="margin-top:7px" id="floorFilters"></div>
-        <div class="filters" style="margin-top:7px" id="pFilters"></div>
-        <div class="filters" style="margin-top:7px" id="sortFilters"></div>
+        <div class="filters" style="margin-top:8px" id="cxFilters"></div>
+        <details class="more">
+          <summary>동 · 타입 · 층 · 프리미엄</summary>
+          <div class="filters" id="dongFilters"></div>
+          <div class="filters" style="margin-top:7px" id="typeFilters"></div>
+          <div class="filters" style="margin-top:7px" id="floorFilters"></div>
+          <div class="filters" style="margin-top:7px" id="pFilters"></div>
+        </details>
+        <div class="filters" id="sortFilters"></div>
       </div>
       <div class="sec" style="padding:0">
         <div class="rows" id="rows"></div>
@@ -1110,6 +1261,7 @@
       <svg class="hud" id="compass" viewBox="0 0 100 100" aria-hidden="true"></svg>
       <div class="hud" id="readout"></div>
       <div class="hud" id="viewbadge"></div>
+      <div class="hud" id="vsplit" hidden></div>
       <div class="hud" id="selTag" hidden><i class="ring"></i><i class="pole"></i>
         <div class="card"><b></b><span></span></div>
       </div>
@@ -1382,14 +1534,13 @@
           '<div class="r sub2"><span>이후 낼 돈 (중도금 ' + fmtMan(q.mLeft) + ' + 잔금 ' + fmtMan(q.fin) + ' + 옵션 나머지 ' + fmtMan(q.optLeft) + (q.cLeft > 0 ? ' + 계약금 ' + fmtMan(q.cLeft) : '') + ')</span><b>' + fmtMan(q.mLeft + q.fin + q.optLeft + q.cLeft) + '</b></div>' +
           (q.next ? '<div class="r sub2"><span>다음 납부 ' + q.next.d + ' · ' + q.next.n + '</span><b>' + fmtMan(q.next.v) + '</b></div>' : '') +
           '</div>' +
-          '<details><summary>분양대금 납부 일정 (분양가 기준)</summary><table class="pt2">' +
+          '<details><summary>납부 일정과 계산 가정</summary><table class="pt2">' +
           q.rows.map(function (r) { return '<tr class="' + (r.paid ? 'done' : '') + '"><td>' + r.n + '</td><td>' + r.d + '</td><td>' + fmtMan(r.v) + '</td><td>' + (r.paid ? '납부' : (r.k === "f" ? '입주' : '예정')) + '</td></tr>'; }).join('') +
           '</table>' +
           (q.optPos > 0 ? '<div class="note" style="margin-top:8px"><b>옵션·확장비 납부</b> (분양대금과 별도 계좌·일정)</div><table class="pt2">' +
             q.optRows.map(function (r, i) { var paid = (i < 2 && r[1] <= new Date().toISOString().slice(0, 10)); return '<tr class="' + (paid ? 'done' : '') + '"><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + fmtMan(r[2]) + '</td><td>' + (paid ? '납부' : (i === 2 ? '입주' : '예정')) + '</td></tr>'; }).join('') +
             '</table>' : '') +
-          '</details>' +
-          '<div class="note">분양대금은 계약금10% · 중도금6회 · 잔금30%, 옵션·확장비는 계약금10% · 중도금10% · 잔금80%(입주 시)로 입주자모집공고에 정해져 있어요. 이미 지난 회차는 매도자가 낸 것이라 승계 때 정산해요. 중도금대출 승계 가능 여부, 취득세·중개수수료는 매도자·시공사·은행에 확인이 필요해요.</div></div>';
+          '<div class="note">분양대금은 계약금10% · 중도금6회 · 잔금30%, 옵션·확장비는 계약금10% · 중도금10% · 잔금80%(입주 시)로 입주자모집공고에 정해져 있어요. 이미 지난 회차는 매도자가 낸 것이라 승계 때 정산해요. 중도금대출 승계 가능 여부, 취득세·중개수수료는 매도자·시공사·은행에 확인이 필요해요.</div></details></div>';
         return h2;
       }
 
@@ -2772,16 +2923,18 @@
         for (var i = 0; i < cut; i++) {
           var r = list[i], L = (r.li >= 0) ? LISTINGS[r.li] : null;
           var sel = (r.key === cur.dong + "-" + cur.line && r.floor === cur.floor);
+          var est = L && isNaN(parseInt(L[1], 10));
+          var right2 = !L ? '상위 ' + (100 - r.ps).toFixed(0) + '%'
+            : sortBy === "cash" ? '현금 ' + fmtMan(priceInfo(L).cashLoan)
+            : sortBy === "value" ? '가성비 ' + (L[12] >= 0 ? "+" : "") + L[12].toFixed(0)
+            : 'P ' + L[4].toLocaleString() + '만';
           h.push('<button class="row' + (L ? ' has' : '') + '" data-k="' + r.key + '" data-f="' + r.floor + '" data-l="' + r.li +
             '" aria-current="' + (sel ? "true" : "false") + '">' +
-            '<span class="tag" style="background:' + TCOL[r.cx + "-" + r.type] + '">' + (r.cx === "K" ? "1차" : "2차") + ' 84' + r.type + '</span>' +
-            '<span class="where">' + r.dong + '동 ' + hosu(r.dong, r.floor, r.line) + ' · ' + r.floor + '층' + (L && isNaN(parseInt(L[1], 10)) ? ' (층 추정)' : '') + '</span>' +
-            (L ? '<span class="p">P ' + L[4].toLocaleString() + '만</span>'
-              : '<span class="rk">' + r.rank + '위</span>') +
-            '<span class="ask">일조 ' + r.sun.toFixed(1) + 'h · 개방 ' + r.open.toFixed(0) + '% · ' + r.score.toFixed(0) + '점</span>' +
-            '<span class="score"><span class="meter"><i style="width:' + r.score.toFixed(0) + '%"></i></span>' +
-            (L ? '호가 ' + (L[5] / 10000).toFixed(2) + '억 · 현금 ' + fmtMan(priceInfo(L).cashLoan) + ' · 가성비 ' + (L[12] >= 0 ? "+" : "") + L[12].toFixed(0)
-              : '상위 ' + (100 - r.ps).toFixed(0) + '% / ' + (100 - r.po).toFixed(0) + '%') + '</span>' +
+            '<span class="r1"><i class="dot" style="background:' + TCOL[r.cx + "-" + r.type] + '"></i>' + r.dong + '동 ' + hosu(r.dong, r.floor, r.line) +
+            ' <span class="fl">' + r.floor + '층</span>' + (est ? '<span class="est">층 추정</span>' : '') + '</span>' +
+            '<span class="r1r">' + (L ? (L[5] / 10000).toFixed(2) + '억' : r.score.toFixed(0) + '점') + '</span>' +
+            '<span class="r2">' + (r.cx === "K" ? "스카이" : "스텔라") + ' · 84' + r.type + ' · 일조 ' + r.sun.toFixed(1) + 'h · 개방 ' + r.open.toFixed(0) + '%</span>' +
+            '<span class="r2r">' + right2 + '</span>' +
             '</button>');
         }
         if (cut < list.length) h.push('<button class="row" id="moreBtn"><span class="where" style="grid-column:1/-1;text-align:center;color:var(--sun)">나머지 ' + (list.length - cut).toLocaleString() + '세대 더 보기</span></button>');
@@ -2866,7 +3019,7 @@
       /* 모드 */
       var anCv = document.getElementById("an");
       function setMode(m) {
-        mode = m;
+        mode = m; document.body.dataset.mode = m;
         document.getElementById("mAerial").setAttribute("aria-pressed", m === "aerial");
         document.getElementById("mLiving").setAttribute("aria-pressed", m === "living");
         document.getElementById("mValue").setAttribute("aria-pressed", m === "value");
@@ -2877,6 +3030,7 @@
         document.getElementById("readout").style.display = (m === "value") ? "none" : "block";
         document.getElementById("viewbadge").style.display = (m === "value") ? "none" : "block";
         document.getElementById("toggles").style.display = (m === "value") ? "none" : "flex";
+        document.getElementById("vsplit").hidden = (m !== "value");
 
         document.getElementById("viewPick").style.display = (m === "living") ? "flex" : "none";
         if (spCv) { spCv.style.display = (m === "living") ? "block" : "none"; }
@@ -2895,6 +3049,19 @@
       document.getElementById("mAerial").onclick = function () { setMode("aerial"); };
       document.getElementById("mLiving").onclick = function () { setMode("living"); };
       document.getElementById("mValue").onclick = function () { setMode("value"); };
+      (function () {
+        var box = document.getElementById("vsplit");
+        [["all", "전체"], ["S", "더스텔라"], ["K", "더스카이"], ["side", "나란히"]].forEach(function (o) {
+          var b = document.createElement("button"); b.textContent = o[1]; b.dataset.v = o[0];
+          b.setAttribute("aria-pressed", o[0] === VSPLIT ? "true" : "false");
+          b.title = o[0] === "all" ? "두 단지를 한 그래프에 (단지별 추세선도 같이)" : o[0] === "side" ? "더스텔라와 더스카이를 좌우로 나란히" : "이 단지 매물만, 이 단지 추세선 기준으로";
+          b.onclick = function () {
+            VSPLIT = o[0]; [].forEach.call(box.children, function (c) { c.setAttribute("aria-pressed", c.dataset.v === VSPLIT ? "true" : "false"); });
+            window.__hover = -1; drawValue();
+          };
+          box.appendChild(b);
+        });
+      })();
 
       /* 토글 */
       var TG = document.getElementById("toggles"), TGS = [], pinsOn = true;
@@ -3102,6 +3269,7 @@
         };
       }
       function zoomValue(e) {
+        var pp = panelAt(e); if (pp) { VR.L = pp.L; VR.R = pp.R; VR.T = pp.T; VR.B = pp.B; }
         var d = vdom(), a = vAt(e), k = (e.deltaY > 0) ? 1.18 : 1 / 1.18;
         var wp = (d.p1 - d.p0) * k, ws = (d.s1 - d.s0) * k;
         wp = Math.max(400, Math.min(40000, wp)); ws = Math.max(4, Math.min(140, ws));
@@ -3122,6 +3290,33 @@
         var raw = span / Math.max(1, n), pw = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), m = raw / pw;
         return (m < 1.5 ? 1 : m < 3 ? 2 : m < 7 ? 5 : 10) * pw;
       }
+      /* ===== 매물 가치 산점도 : 전체 / 더스텔라 / 더스카이 / 나란히 ===== */
+      var VSPLIT = "all";            /* all 합쳐서 · S 더스텔라 · K 더스카이 · side 나란히 */
+      var VRS = [];                  /* 지금 그려진 패널(영역) 목록 */
+      var VCOL = { S: "#B45F06", K: "#2D5FA8" };
+      function fitOf(arr) {          /* 프리미엄 → 점수 최소제곱 직선 (표본 3개 미만이면 없음) */
+        var n = arr.length; if (n < 3) return null;
+        var sx = 0, sy = 0, sxx = 0, sxy = 0;
+        arr.forEach(function (Lg) { sx += Lg[4]; sy += Lg[10]; sxx += Lg[4] * Lg[4]; sxy += Lg[4] * Lg[10]; });
+        var den = n * sxx - sx * sx; if (Math.abs(den) < 1e-9) return null;
+        var b = (n * sxy - sx * sy) / den; return { a: (sy - b * sx) / n, b: b };
+      }
+      function valuePanels(W, H) {
+        var T = 76, B = H - 58, S = [], K = [];
+        LISTINGS.forEach(function (Lg, i) { (cxOf(Lg[0]) === "S" ? S : K).push(i); });
+        if (VSPLIT === "side") {
+          var mid = W / 2;
+          return [{ key: "S", L: 64, R: mid - 20, T: T + 20, B: B, idx: S, title: "2차 더스텔라" },
+                  { key: "K", L: mid + 52, R: W - 28, T: T + 20, B: B, idx: K, title: "1차 더스카이" }];
+        }
+        var idx = VSPLIT === "S" ? S : VSPLIT === "K" ? K : S.concat(K);
+        return [{ key: VSPLIT, L: 64, R: W - 28, T: T, B: B, idx: idx, title: null }];
+      }
+      function panelAt(e) {
+        var r = anCv.getBoundingClientRect(), mx = e.clientX - r.left, best = null, bd = 1e9;
+        VRS.forEach(function (P) { var d = mx < P.L ? P.L - mx : (mx > P.R ? mx - P.R : 0); if (d < bd) { bd = d; best = P; } });
+        return best;
+      }
       function drawValue() {
         var c = anCv, g = c.getContext("2d");
         var W = stage.clientWidth, H = stage.clientHeight;
@@ -3129,17 +3324,33 @@
         g.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
         g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, W, H);
         if (!RANK) { g.fillStyle = "#8A95A2"; g.font = "14px system-ui"; g.fillText("전 세대 계산 중…", 24, 40); return; }
-        var L = 64, R = W - 28, T = 52, B = H - 58;
         g.fillStyle = "#171E27"; g.font = "600 14px system-ui,sans-serif";
-        g.fillText("프리미엄 대비 일조·조망 점수", L, 28);
+        g.fillText("프리미엄 대비 일조·조망 점수", 64, 28);
         g.fillStyle = "#8A95A2"; g.font = "11px system-ui,sans-serif";
-        g.fillText("추세선 위쪽 = 같은 값 치고 프리미엄이 싼 매물 · 휠: 확대·축소 · 드래그: 이동 · 더블클릭: 초기화 · 점 클릭: 그 세대로", L, 44);
-        VR.L = L; VR.R = R; VR.T = T; VR.B = B;
-        var maxP = Math.max.apply(null, LISTINGS.map(function (a) { return a[4]; }));
-        var d = vdom();
+        g.fillText("추세선 위쪽 = 같은 값 치고 프리미엄이 싼 매물 · 휠: 확대·축소 · 드래그: 이동 · 더블클릭: 초기화 · 점 클릭: 그 세대로", 64, 60);
+        VRS = valuePanels(W, H);
+        window.__pts = []; window.__topSet = {};
+        VRS.forEach(function (P) { drawValuePanel(g, P, W, H); });
+        VR.L = VRS[0].L; VR.R = VRS[0].R; VR.T = VRS[0].T; VR.B = VRS[0].B;
+        if (VSPLIT === "all") {      /* 두 단지 추세선 범례 */
+          g.font = "11px system-ui,sans-serif"; var lx = VRS[0].R - 262, ly = VRS[0].B - 14;
+          g.fillStyle = "rgba(255,255,255,.9)"; g.fillRect(lx - 8, ly - 12, 262, 22);
+          [["S", "더스텔라 추세"], ["K", "더스카이 추세"]].forEach(function (k, i) {
+            g.strokeStyle = VCOL[k[0]]; g.lineWidth = 2; g.beginPath(); g.moveTo(lx + i * 130, ly); g.lineTo(lx + i * 130 + 22, ly); g.stroke();
+            g.fillStyle = "#586573"; g.fillText(k[1], lx + i * 130 + 28, ly + 4);
+          });
+        }
+      }
+      function drawValuePanel(g, P, W, H) {
+        var L = P.L, R = P.R, T = P.T, B = P.B, d = vdom();
         function X(p) { return L + (p - d.p0) / (d.p1 - d.p0) * (R - L); }
         function Y(s) { return B - (s - d.s0) / (d.s1 - d.s0) * (B - T); }
-        var sStep = niceStep(d.s1 - d.s0, 5), pStep = niceStep(d.p1 - d.p0, 6);
+        var sStep = niceStep(d.s1 - d.s0, 5), pStep = niceStep(d.p1 - d.p0, P.title ? 4 : 6);
+        if (P.title) {
+          g.fillStyle = VCOL[P.key]; g.fillRect(L, T - 20, 4, 14);
+          g.fillStyle = "#171E27"; g.font = "600 12.5px system-ui,sans-serif";
+          g.fillText(P.title + " · " + P.idx.length + "건", L + 10, T - 8);
+        }
         g.font = "10px IBM Plex Mono, monospace";
         for (var sv = Math.ceil(d.s0 / sStep) * sStep; sv <= d.s1; sv += sStep) {
           g.beginPath(); g.strokeStyle = "#E4E8EE"; g.lineWidth = 1; g.moveTo(L, Y(sv)); g.lineTo(R, Y(sv)); g.stroke();
@@ -3152,15 +3363,23 @@
           g.fillText(pStep >= 1000 ? ("P" + (pv / 1000) + "천") : ("P" + Math.round(pv).toLocaleString()), X(pv) - 18, B + 16);
         }
         g.save(); g.beginPath(); g.rect(L, T, R - L, B - T); g.clip();
-        var f = window.__fit;
-        g.beginPath(); g.strokeStyle = "#BFC8D2"; g.setLineDash([5, 4]); g.lineWidth = 1.4;
-        g.moveTo(X(d.p0), Y(f.a + f.b * d.p0)); g.lineTo(X(d.p1), Y(f.a + f.b * d.p1)); g.stroke();
-        g.setLineDash([]);
-        var rankTop = LISTINGS.map(function (a, i) { return { v: a[12], i: i }; }).sort(function (p, q) { return q.v - p.v; }).slice(0, 5);
-        window.__topSet = {}; rankTop.forEach(function (t) { window.__topSet[t.i] = 1; });
-        window.__pts = [];
-        LISTINGS.forEach(function (Lg, i) {
-          var x = X(Lg[4]), y = Y(Lg[10]), sel = (i === curListing), hov = (i === window.__hover);
+        /* 추세선 : 합쳐서 볼 때는 전체선(회색 점선) + 단지별 선, 단지만 볼 때는 그 단지 선 */
+        var own = (P.key === "all") ? null : fitOf(P.idx.map(function (i) { return LISTINGS[i]; }));
+        function line(f, col, w, dash) {
+          if (!f) return;
+          g.beginPath(); g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash || []);
+          g.moveTo(X(d.p0), Y(f.a + f.b * d.p0)); g.lineTo(X(d.p1), Y(f.a + f.b * d.p1)); g.stroke(); g.setLineDash([]);
+        }
+        if (P.key === "all") {
+          line(window.__fit, "#BFC8D2", 1.4, [5, 4]);
+          ["S", "K"].forEach(function (k) { line(fitOf(P.idx.filter(function (i) { return cxOf(LISTINGS[i][0]) === k; }).map(function (i) { return LISTINGS[i]; })), VCOL[k], 2); });
+        } else line(own, VCOL[P.key] || "#BFC8D2", 2.2);
+        /* 가성비 상위 : 합쳐서 볼 때는 기존 기준(전체 추세선), 단지별로 볼 때는 그 단지 추세선 기준 */
+        var resid = function (i) { var Lg = LISTINGS[i]; return own ? Lg[10] - (own.a + own.b * Lg[4]) : Lg[12]; };
+        var ranked = P.idx.slice().sort(function (p, q) { return resid(q) - resid(p); });
+        ranked.slice(0, 5).forEach(function (i) { window.__topSet[i] = 1; });
+        P.idx.forEach(function (i) {
+          var Lg = LISTINGS[i], x = X(Lg[4]), y = Y(Lg[10]), sel = (i === curListing), hov = (i === window.__hover);
           g.beginPath(); g.arc(x, y, sel ? 9 : (hov ? 8 : 6), 0, 7);
           g.fillStyle = TCOL[cxOf(Lg[0]) + "-" + Lg[2]]; g.fill();
           g.strokeStyle = (sel || hov) ? "#171E27" : "rgba(255,255,255,.9)"; g.lineWidth = sel ? 2.5 : (hov ? 2 : 1.5); g.stroke();
@@ -3168,10 +3387,10 @@
           if (hov) {
             var tip = cxKo(Lg[0]) + " " + Lg[0] + "동 " + Lg[1] + "층 · 84" + Lg[2] + " · P " + Lg[4].toLocaleString() + "만 · " + Lg[10].toFixed(0) + "점";
             g.font = "600 11px system-ui,sans-serif";
-            var tw = g.measureText(tip).width + 14;
+            var tw = g.measureText(tip).width + 14, tx = Math.max(L + 2, Math.min(R - tw - 2, x - tw / 2));
             g.fillStyle = "rgba(23,30,39,.92)";
-            if (g.roundRect) { g.beginPath(); g.roundRect(x - tw / 2, y - 32, tw, 22, 6); g.fill(); } else g.fillRect(x - tw / 2, y - 32, tw, 22);
-            g.fillStyle = "#fff"; g.textAlign = "center"; g.fillText(tip, x, y - 17); g.textAlign = "left";
+            if (g.roundRect) { g.beginPath(); g.roundRect(tx, y - 32, tw, 22, 6); g.fill(); } else g.fillRect(tx, y - 32, tw, 22);
+            g.fillStyle = "#fff"; g.textAlign = "left"; g.fillText(tip, tx + 7, y - 17);
           }
           if (sel || window.__topSet[i]) {
             g.fillStyle = sel ? "#171E27" : "#586573"; g.font = (sel ? "600 11px" : "500 10px") + " system-ui,sans-serif";
@@ -3181,8 +3400,10 @@
         g.restore();
         g.strokeStyle = "#D3D9E1"; g.lineWidth = 1; g.strokeRect(L, T, R - L, B - T);
         g.fillStyle = "#586573"; g.font = "11px system-ui,sans-serif";
-        var top = LISTINGS.map(function (a, i) { return { a: a, i: i }; }).sort(function (p, q) { return q.a[12] - p.a[12]; }).slice(0, 3);
-        g.fillText("가성비 상위 : " + top.map(function (t) { return cxKo(t.a[0]) + " " + t.a[0] + "동 " + t.a[1] + "층 84" + t.a[2] + " (P" + t.a[4].toLocaleString() + "만)"; }).join("   ·   "), L, H - 30);
+        var maxW = R - L, topN = ranked.slice(0, 3), txt;
+        function topText(n) { return "가성비 상위 : " + ranked.slice(0, n).map(function (i) { var a = LISTINGS[i]; return cxKo(a[0]) + " " + a[0] + "동 " + a[1] + "층 84" + a[2] + " (P" + a[4].toLocaleString() + "만)"; }).join("   ·   "); }
+        txt = topText(3); if (g.measureText(txt).width > maxW) txt = topText(2); if (g.measureText(txt).width > maxW) txt = topText(1);
+        g.fillText(txt, L, H - 30);
       }
       function nearestPt(e) {
         if (!window.__pts) return null;
@@ -3384,9 +3605,7 @@
         ceilGroup.visible = !viewTop; labelGroup.visible = viewTop;
 
         document.getElementById("readout").innerHTML =
-          "<b>" + cxKo(u.dong) + " " + u.dong + "동 " + hosu(u.dong, cur.floor, u.line) + " · " + cur.floor + "층</b> · 84" + u.type + "<br>" +
-          "거실 " + compassKo(u.bear) + "향 " + u.bear.toFixed(0) + "°<br>" +
-          dateLabel(doy) + " " + hhmm(minute) + "<br>" +
+          "<b>" + dateLabel(doy) + " " + hhmm(minute) + "</b> · " +
           '<span class="sunbadge">태양 고도 ' + sun.alt.toFixed(1) + "° · 방위 " + sun.az.toFixed(0) + "°</span>";
 
         applyCamera(); liveBadge();
