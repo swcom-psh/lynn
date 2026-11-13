@@ -1218,9 +1218,145 @@
     #sheet p { font-size: 13px; color: var(--fg2) }
   </style>
 
+  <style id="sig">
+    /* ===== 디자인 6안 '시그니처' : 카드형 레이아웃 · 3D 안 시간 독 · 아이콘 버튼 · 검정 상세 카드 ===== */
+    :root { --ink: #0E1116; --paper: #F1F2F5; --fg: #0E1116; --fg2: #3A4350; --fg3: #5B6472; --line: #E6E8EC; --line2: #D9DDE3; --sun: #E8590C; --sun-ink: #B8460A; --sun-soft: #FFF1E7 }
+    body { background: var(--paper) }
+    #app { padding: 14px 16px 16px; gap: 12px 16px; grid-template-columns: 308px minmax(0, 1fr) 388px; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "top top top" "list stage info"; background: var(--paper) }
+    .glass { background: rgba(255, 255, 255, .88); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 6px 24px rgba(14, 17, 22, .16); border: 1px solid rgba(255, 255, 255, .7) }
+
+    /* 상단 */
+    #top { background: none; border: 0; min-height: 44px; padding: 0 4px; gap: 14px }
+    #top h1 { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.5px }
+    #top h1 span { margin-left: 0 }
+    .modes { order: 2; margin: 0 auto; background: #E1E4E9; border-radius: 12px; padding: 3px }
+    .modes button { border-radius: 9px; padding: 8px 20px; color: var(--fg3) }
+    .modes button[aria-pressed="true"] { color: var(--ink) }
+    .meta { order: 3; margin-left: 0 }
+    .ghost { order: 4; background: #fff; border-radius: 10px; font-weight: 600; color: var(--ink); box-shadow: 0 1px 2px rgba(14, 17, 22, .08) }
+    .ghost:hover { background: #fff; box-shadow: 0 2px 8px rgba(14, 17, 22, .14) }
+
+    /* 카드 세 장 */
+    #list { border: 0; border-radius: 20px; box-shadow: 0 1px 2px rgba(14, 17, 22, .04), 0 8px 24px rgba(14, 17, 22, .05); overflow-y: auto }
+    #stage { border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(14, 17, 22, .10) }
+    #info { border: 0; background: none; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-bottom: 4px; scrollbar-width: thin }
+    #info .sec, #pickCard { margin: 0; border-radius: 20px; box-shadow: 0 1px 2px rgba(14, 17, 22, .04), 0 8px 24px rgba(14, 17, 22, .05); flex: none }
+    .sec-h h2 { font-weight: 800 }
+
+    /* 목록 */
+    #onlyFilters, #cxFilters { flex-wrap: nowrap; gap: 2px; padding: 3px; border-radius: 12px; background: var(--line) }
+    #onlyFilters .chip, #cxFilters .chip { flex: 1; justify-content: center; height: 32px; border: 0; border-radius: 9px; background: none; color: var(--fg3); font-weight: 600; font-size: 12.5px; padding: 0 6px; white-space: nowrap }
+    #onlyFilters .chip[aria-pressed="true"], #cxFilters .chip[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(14, 17, 22, .14) }
+    .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink) }
+    #list .sec:first-child { padding: 18px 18px 12px }
+    .rows { padding: 0 8px 8px }
+    .row { border-bottom: 0; border-radius: 14px; padding: 12px 14px; margin-bottom: 2px }
+    .row:hover { background: #F4F5F7 }
+    .row[aria-current="true"] { background: var(--ink); box-shadow: none }
+    .row[aria-current="true"] .r1, .row[aria-current="true"] .r1r { color: #fff }
+    .row[aria-current="true"] .r1 .fl, .row[aria-current="true"] .r2 { color: #A9B1BD }
+    .row[aria-current="true"] .r2r { color: #FF9A57 }
+    .row[aria-current="true"] .est { background: #2A313B; color: #C3CAD4 }
+
+    /* 3D 위 */
+    #readout { left: 16px; top: 16px; display: block; padding: 10px 14px; line-height: 20px; white-space: nowrap; border-radius: 12px; background: rgba(255, 255, 255, .88); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 6px 24px rgba(14, 17, 22, .16); border: 1px solid rgba(255, 255, 255, .7); color: var(--fg3) }
+    #readout b { color: var(--ink); font-weight: 700 }
+    #compass { width: 44px; height: 44px; top: 16px; right: 16px; border-radius: 50%; background: rgba(255, 255, 255, .88); box-shadow: 0 6px 24px rgba(14, 17, 22, .16) }
+    #bl { left: auto; right: 18px; top: 70px; bottom: auto; max-width: none; align-items: flex-end }
+    #toggles { flex-direction: column; flex-wrap: nowrap; gap: 8px }
+    #toggles label { position: relative; width: 40px; height: 40px; padding: 0; border-radius: 12px; justify-content: center; cursor: pointer; color: var(--fg3); background: rgba(255, 255, 255, .88); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 6px 24px rgba(14, 17, 22, .16) }
+    #toggles label input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer }
+    #toggles label .tx { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0) }
+    #toggles label .ic { display: flex; pointer-events: none }
+    #toggles label:has(input:checked) { background: var(--ink); color: #fff }
+    #toggles label:has(input:focus-visible) { outline: 2px solid var(--sun); outline-offset: 2px }
+    #toggles label:hover::after { content: attr(data-tip); position: absolute; right: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: rgba(14, 17, 22, .9); color: #fff; font-size: 12px; font-weight: 500; padding: 6px 10px; border-radius: 8px; white-space: nowrap; pointer-events: none }
+    #hint, #bl:hover #hint { display: none !important }
+    body[data-mode="living"] #hint { display: block !important; position: absolute !important; left: auto; right: calc(100% + 8px); top: 0; bottom: auto; height: 40px; line-height: 40px; padding: 0 12px; border-radius: 12px; background: rgba(255, 255, 255, .88); color: var(--fg2); box-shadow: 0 6px 24px rgba(14, 17, 22, .16) }
+    #viewbadge { right: 16px; bottom: 116px; border-radius: 14px }
+    #vsplit { right: 16px; top: 16px }
+    #selTag .card { background: var(--ink); border-radius: 14px }
+    #selTag .pole { background: var(--ink) }
+    #selTag .ring { width: 14px; height: 14px; left: -7px; top: -7px; background: #FF8A3D; border: 2.5px solid #fff; box-shadow: 0 0 0 5px rgba(255, 138, 61, .3); animation: none }
+
+    /* 시간 독 (3D 화면 안에 떠 있음) */
+    #bar { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 84px; z-index: 6; display: flex; align-items: center; gap: 16px; padding: 0 16px 0 14px; border-radius: 18px; border-top: 0; cursor: default; background: rgba(255, 255, 255, .88); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 6px 24px rgba(14, 17, 22, .16); border: 1px solid rgba(255, 255, 255, .7) }
+    body[data-mode="value"] #bar { display: none }
+    #play { width: 48px; height: 48px; flex: none; border-radius: 50%; border: 0; background: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 }
+    #play:hover { background: #2A313B }
+    #play::before { content: ""; border-style: solid; border-width: 8px 0 8px 13px; border-color: transparent transparent transparent #fff; margin-left: 3px }
+    #play[data-s="stop"]::before { border: 0; width: 13px; height: 13px; background: #fff; border-radius: 2px; margin: 0 }
+    .dk-time { position: relative; flex: 1; min-width: 0; height: 62px }
+    .dk-time canvas { position: absolute; left: 0; top: 0; width: 100%; height: 48px }
+    .dk-time input[type=range] { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 48px; margin: 0; background: none; cursor: pointer }
+    .dk-time input[type=range]::-webkit-slider-runnable-track { background: none; height: 48px }
+    .dk-time input[type=range]::-moz-range-track { background: none }
+    .dk-time input[type=range]::-webkit-slider-thumb { width: 20px; height: 20px; margin-top: 14px; border: 3px solid var(--sun); background: #fff }
+    .dk-ticks { position: absolute; left: 10px; right: 10px; bottom: 0; height: 12px; font-size: 10.5px; color: var(--fg3) }
+    .dk-ticks span { position: absolute; transform: translateX(-50%) }
+    .dk-read { flex: none; width: 124px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px }
+    #tOut { font-size: 21px; font-weight: 800; letter-spacing: -.6px; line-height: 1.1; color: var(--ink) }
+    #dOut { font-size: 12px; color: var(--fg3); font-weight: 500 }
+    .dk-read input[type=range] { width: 124px; margin: 5px 0 0 }
+    .dk-read input[type=range]::-webkit-slider-thumb { width: 14px; height: 14px; border-width: 2px }
+    .presets { flex: none; flex-direction: column; flex-wrap: nowrap; gap: 2px; padding: 3px; border-radius: 12px; background: var(--line) }
+    .presets button { height: 22px; padding: 0 12px; border-radius: 9px; background: none; font-size: 11.5px; font-weight: 600; color: var(--fg3) }
+    .presets button:hover { background: rgba(255, 255, 255, .6) }
+    .presets button.on { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(14, 17, 22, .14) }
+
+    /* 검정 상세 카드 */
+    #pickCard { background: var(--ink); color: #fff; padding: 20px 22px; box-shadow: 0 10px 28px rgba(14, 17, 22, .25) }
+    #pickCard .hd { display: flex; align-items: center; justify-content: space-between; margin: 0 }
+    #pickCard .tag { display: inline-flex; align-items: center; gap: 7px; height: 24px; padding: 0 10px; border-radius: 12px; background: rgba(255, 255, 255, .10); color: #E6E9EE; font-size: 12px; font-weight: 600 }
+    #pickCard .tag i { width: 8px; height: 8px; border-radius: 50% }
+    #pickCard .brk { font-size: 12px; color: #A9B1BD }
+    #pickCard .ttl { font-size: 23px; font-weight: 800; letter-spacing: -.6px; margin-top: 12px; color: #fff; white-space: normal }
+    #pickCard .sub { font-size: 12.5px; color: #A9B1BD; margin-top: 3px }
+    #pickCard .desc { font-size: 12.5px; color: #C3CAD4; margin-top: 8px; line-height: 1.5 }
+    #pickCard .ask { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 16px }
+    #pickCard .ask small { display: block; font-size: 12px; color: #A9B1BD }
+    #pickCard .ask b { font-size: 40px; font-weight: 800; letter-spacing: -1.6px; line-height: 1.05 }
+    #pickCard .ask b i { font-style: normal; font-size: 20px; letter-spacing: 0; margin-left: 2px }
+    #pickCard .val { display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 14px; font-size: 12.5px; font-weight: 700; background: rgba(52, 199, 123, .16); color: #5BE0A0 }
+    #pickCard .val.dn { background: rgba(255, 255, 255, .08); color: #C3CAD4 }
+    #pickCard .pbar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; margin: 14px 0 0; background: none }
+    #pickCard .leg { display: flex; justify-content: space-between; gap: 8px; margin-top: 9px; font-size: 12px; color: #A9B1BD }
+    #pickCard .leg b { color: #fff; font-weight: 600 }
+    #pickCard .cash { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; padding: 14px 0 0; border: 0; border-top: 1px solid #2A313B; border-radius: 0; background: none }
+    #pickCard .cash b { display: block; font-size: 12.5px; font-weight: 600; color: #fff }
+    #pickCard .cash small { display: block; font-size: 11.5px; color: #A9B1BD; margin-top: 2px }
+    #pickCard .cash .big { font-size: 26px; font-weight: 800; letter-spacing: -.8px; color: #FF9A57; white-space: nowrap }
+    #pickCard details { margin-top: 12px }
+    #pickCard summary { color: #C3CAD4; font-size: 12.5px; font-weight: 600 }
+    #pickCard .pt td { color: #A9B1BD; font-size: 12.5px; padding: 4px 0 }
+    #pickCard .pt td:last-child { color: #fff }
+    #pickCard .pt2 td { color: #C3CAD4; border-bottom-color: #2A313B }
+    #pickCard .pt2 tr.done td { color: #6B7480 }
+    #pickCard .note { color: #8B94A1 }
+    #pickCard .go { width: 100%; height: 46px; margin-top: 16px; border: 0; border-radius: 14px; background: var(--sun); color: #fff; font: 700 14px var(--sans); cursor: pointer }
+    #pickCard .go:hover { background: #F06A1F }
+
+    @media (max-width:960px) {
+      #app { padding: 10px; gap: 10px; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 66vh auto auto; grid-template-areas: "top" "stage" "info" "list"; height: auto }
+      #top { flex-wrap: wrap }
+      .modes { order: 5; width: 100%; margin: 0 }
+      #info, #list { overflow: visible }
+    }
+    @media (max-width:640px) {
+      #bar { height: auto; flex-wrap: wrap; gap: 8px 12px; padding: 10px 12px }
+      .dk-time { flex: 1 1 60% }
+      .dk-read { width: auto; flex: 1 1 100%; flex-direction: row; align-items: center; gap: 10px }
+      .dk-read input[type=range] { flex: 1; width: auto; margin: 0 }
+      .presets { flex-direction: row; width: 100% }
+      .presets button { flex: 1; height: 28px }
+      #viewbadge { bottom: 150px }
+      #readout { font-size: 11.5px; padding: 8px 10px; max-width: calc(100% - 90px); overflow: hidden }
+    }
+  </style>
+
   <div id="app">
     <header id="top">
-      <h1>원주 우미린 <span>스텔라 · 스카이 일조·조망</span></h1>
+      <h1><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="8" fill="#0E1116"/><rect x="6.5" y="12" width="4" height="10" rx="1" fill="#fff"/><rect x="12" y="6" width="4" height="16" rx="1" fill="#FF8A3D"/><rect x="17.5" y="10" width="4" height="12" rx="1" fill="#fff"/></svg>원주 우미린 <span>스텔라 · 스카이 일조·조망</span></h1>
       <div class="meta">
         <span>무실동 2002·2006 · <b>1,827</b>세대 · <b>10</b>개동 · 최고 <b>43</b>층</span>
         <span>매물 <b>157</b>건 / 중복제외 <b id="uniqN">98</b>건</span>
@@ -1269,6 +1405,24 @@
       <div id="bl">
         <div class="hud" id="toggles"></div>
         <div class="hud" id="hint">드래그: 이동 · 우클릭/Shift 드래그: 회전 · 휠: 확대 · 핀 클릭: 매물 선택</div>
+      </div>
+      <div id="bar">
+        <button id="play" aria-label="해 돌리기" title="해 돌리기"></button>
+        <div class="dk-time">
+          <canvas id="dockCv"></canvas>
+          <input type="range" id="tSlider" min="300" max="1200" step="5" value="600" aria-label="시각">
+          <div class="dk-ticks"><span style="left:6.67%">06</span><span style="left:26.67%">09</span><span style="left:46.67%">12</span><span style="left:66.67%">15</span><span style="left:86.67%">18</span></div>
+        </div>
+        <div class="dk-read">
+          <output id="tOut"></output>
+          <output id="dOut"></output>
+          <input type="range" id="dSlider" min="0" max="364" value="0" aria-label="날짜">
+        </div>
+        <div class="presets">
+          <button data-day="동지" title="12월 22일">동지</button>
+          <button data-day="춘분" title="3월 20일">춘분</button>
+          <button data-day="하지" title="6월 21일">하지</button>
+        </div>
       </div>
     </main>
 
@@ -1354,24 +1508,6 @@
       </div>
     </aside>
 
-    <footer id="bar">
-      <div class="slider">
-        <label for="dSlider">날짜</label>
-        <input type="range" id="dSlider" min="0" max="364" value="0">
-        <output id="dOut"></output>
-      </div>
-      <div class="slider">
-        <label for="tSlider">시각</label>
-        <input type="range" id="tSlider" min="300" max="1200" step="5" value="600">
-        <output id="tOut"></output>
-      </div>
-      <div class="presets">
-        <button data-day="동지">동지 12/22</button>
-        <button data-day="춘분">춘분 3/20</button>
-        <button data-day="하지">하지 6/21</button>
-        <button id="play">해 돌리기</button>
-      </div>
-    </footer>
   </div>
 
   <div id="sheet">
@@ -1519,31 +1655,23 @@
         };
       }
       function priceHTML(L) {
-        var q = priceInfo(L), tot = q.P + q.optPos + q.prem || 1;
-        var h2 = '<div class="pay"><div class="pbar">' +
-          '<i style="flex:' + q.P + ';background:#8A95A2" title="분양가"></i>' +
-          '<i style="flex:' + q.optPos + ';background:#E3A857" title="옵션·확장비"></i>' +
-          '<i style="flex:' + q.prem + ';background:#D07520" title="프리미엄"></i></div>' +
-          '<table class="pt">' +
-          '<tr><td><i class="sw" style="background:#8A95A2"></i>분양가</td><td>' + fmtMan(q.P) + '</td></tr>' +
-          '<tr><td><i class="sw" style="background:#E3A857"></i>옵션·확장비 <small>(호가−분양가−프리미엄)</small></td><td>' + (q.opt >= 0 ? fmtMan(q.opt) : '0') + '</td></tr>' +
-          '<tr><td><i class="sw" style="background:#D07520"></i>프리미엄</td><td>' + fmtMan(q.prem) + '</td></tr>' +
-          '<tr class="sum"><td>호가 (총 매수가)</td><td>' + fmtMan(q.ask) + '</td></tr></table>' +
-          (q.opt < 0 ? '<div class="note">호가가 분양가+프리미엄보다 낮아 옵션·확장비는 0으로 봤어요.</div>' : '') +
-          '<div class="cash"><div class="r"><span>지금 계약하면 내 돈 <small>(중도금대출 승계)</small></span><span class="big">' + fmtMan(q.cashLoan) + '</span></div>' +
-          '<div class="r"><span>프리미엄 ' + fmtMan(q.prem) + ' + 옵션 이미 낸 분 ' + fmtMan(q.optPaid) + ' + 낸 계약금 ' + fmtMan(q.cPaid) + '</span></div>' +
-          (q.mPaid > 0 ? '<div class="r sub2"><span>이미 낸 중도금 ' + fmtMan(q.mPaid) + '까지 현금이면</span><b>' + fmtMan(q.cashAll) + '</b></div>' : '') +
-          '<div class="r sub2"><span>이후 낼 돈 (중도금 ' + fmtMan(q.mLeft) + ' + 잔금 ' + fmtMan(q.fin) + ' + 옵션 나머지 ' + fmtMan(q.optLeft) + (q.cLeft > 0 ? ' + 계약금 ' + fmtMan(q.cLeft) : '') + ')</span><b>' + fmtMan(q.mLeft + q.fin + q.optLeft + q.cLeft) + '</b></div>' +
-          (q.next ? '<div class="r sub2"><span>다음 납부 ' + q.next.d + ' · ' + q.next.n + '</span><b>' + fmtMan(q.next.v) + '</b></div>' : '') +
-          '</div>' +
-          '<details><summary>납부 일정과 계산 가정</summary><table class="pt2">' +
-          q.rows.map(function (r) { return '<tr class="' + (r.paid ? 'done' : '') + '"><td>' + r.n + '</td><td>' + r.d + '</td><td>' + fmtMan(r.v) + '</td><td>' + (r.paid ? '납부' : (r.k === "f" ? '입주' : '예정')) + '</td></tr>'; }).join('') +
-          '</table>' +
-          (q.optPos > 0 ? '<div class="note" style="margin-top:8px"><b>옵션·확장비 납부</b> (분양대금과 별도 계좌·일정)</div><table class="pt2">' +
-            q.optRows.map(function (r, i) { var paid = (i < 2 && r[1] <= new Date().toISOString().slice(0, 10)); return '<tr class="' + (paid ? 'done' : '') + '"><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + fmtMan(r[2]) + '</td><td>' + (paid ? '납부' : (i === 2 ? '입주' : '예정')) + '</td></tr>'; }).join('') +
-            '</table>' : '') +
-          '<div class="note">분양대금은 계약금10% · 중도금6회 · 잔금30%, 옵션·확장비는 계약금10% · 중도금10% · 잔금80%(입주 시)로 입주자모집공고에 정해져 있어요. 이미 지난 회차는 매도자가 낸 것이라 승계 때 정산해요. 중도금대출 승계 가능 여부, 취득세·중개수수료는 매도자·시공사·은행에 확인이 필요해요.</div></details></div>';
-        return h2;
+        var q = priceInfo(L), today = new Date().toISOString().slice(0, 10);
+        return '<div class="ask"><div><small>호가</small><b>' + (q.ask / 10000).toFixed(2) + '<i>억</i></b></div>' +
+          (typeof L[12] === "number" ? '<span class="val ' + (L[12] >= 0 ? 'up' : 'dn') + '" title="같은 프리미엄대의 다른 매물과 견준 일조·조망 점수 차이">가성비 ' + (L[12] >= 0 ? '+' : '') + L[12].toFixed(0) + '</span>' : '') + '</div>' +
+          '<div class="pbar"><i style="flex:' + q.P + ';background:#667080" title="분양가"></i><i style="flex:' + q.optPos + ';background:#F2B263" title="옵션·확장비"></i><i style="flex:' + q.prem + ';background:#FF8A3D" title="프리미엄"></i></div>' +
+          '<div class="leg"><span>분양가 <b>' + fmtMan(q.P) + '</b></span><span>옵션 <b>' + fmtMan(q.optPos) + '</b></span><span>프리미엄 <b>' + fmtMan(q.prem) + '</b></span></div>' +
+          '<div class="cash"><div><b>지금 필요한 현금</b><small>프리미엄 + 옵션 낸 분 + 계약금 · 대출 승계 기준</small></div><span class="big">' + fmtMan(q.cashLoan) + '</span></div>' +
+          '<details><summary>납부 일정과 계산 가정</summary><table class="pt" style="margin-top:8px">' +
+          '<tr><td>프리미엄 ' + fmtMan(q.prem) + ' + 옵션 이미 낸 분 ' + fmtMan(q.optPaid) + ' + 낸 계약금 ' + fmtMan(q.cPaid) + '</td><td>' + fmtMan(q.cashLoan) + '</td></tr>' +
+          (q.mPaid > 0 ? '<tr><td>이미 낸 중도금 ' + fmtMan(q.mPaid) + '까지 현금이면</td><td>' + fmtMan(q.cashAll) + '</td></tr>' : '') +
+          '<tr><td>이후 낼 돈 (중도금 ' + fmtMan(q.mLeft) + ' + 잔금 ' + fmtMan(q.fin) + ' + 옵션 나머지 ' + fmtMan(q.optLeft) + ')</td><td>' + fmtMan(q.mLeft + q.fin + q.optLeft + q.cLeft) + '</td></tr>' +
+          (q.next ? '<tr><td>다음 납부 ' + q.next.d + ' · ' + q.next.n + '</td><td>' + fmtMan(q.next.v) + '</td></tr>' : '') + '</table>' +
+          '<div class="note" style="margin-top:8px"><b>분양대금</b> (분양가 기준)</div><table class="pt2">' +
+          q.rows.map(function (r) { return '<tr class="' + (r.paid ? 'done' : '') + '"><td>' + r.n + '</td><td>' + r.d + '</td><td>' + fmtMan(r.v) + '</td><td>' + (r.paid ? '납부' : (r.k === "f" ? '입주' : '예정')) + '</td></tr>'; }).join('') + '</table>' +
+          (q.optPos > 0 ? '<div class="note" style="margin-top:8px"><b>옵션·확장비</b> (별도 계좌·일정, 금액은 호가에서 역산한 추정)</div><table class="pt2">' +
+            q.optRows.map(function (r, i) { var paid = (i < 2 && r[1] <= today); return '<tr class="' + (paid ? 'done' : '') + '"><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + fmtMan(r[2]) + '</td><td>' + (paid ? '납부' : (i === 2 ? '입주' : '예정')) + '</td></tr>'; }).join('') + '</table>' : '') +
+          '<div class="note">분양대금은 계약금10% · 중도금6회 · 잔금30%, 옵션·확장비는 계약금10% · 중도금10% · 잔금80%(입주 시)로 입주자모집공고에 정해져 있어요. 이미 지난 회차는 매도자가 낸 것이라 승계 때 정산해요. 중도금대출 승계 가능 여부, 취득세·중개수수료는 매도자·시공사·은행에 확인이 필요해요.</div></details>' +
+          '<button class="go" id="goLiving">' + (mode === "living" ? '단지에서 보기' : '거실에서 보기 →') + '</button>';
       }
 
       function cxKo(d) { return d < 500 ? "1차" : "2차"; }
@@ -2872,7 +3000,7 @@
         [[1, "매물만 98건"], [0, "전 세대 1,827"]],
         function (v) { onlyListed = !!v; drawRows(); }, 0);
       chipRow(document.getElementById("cxFilters"),
-        [[0, "두 단지"], ["K", "1차 더스카이 900"], ["S", "2차 더스텔라 927"]],
+        [[0, "전체"], ["K", "스카이"], ["S", "스텔라"]],
         function (v) { cxFilter = v || 0; drawRows(); }, 0);
       chipRow(document.getElementById("dongFilters"),
         [[0, "전체 동"], [401, "401"], [402, "402"], [403, "403"], [404, "404"], [405, "405"],
@@ -3083,10 +3211,18 @@
       function syncToggles() { TGS.forEach(function (t) { t.el.style.display = t.vis() ? "" : "none"; }); }
       (function () {
         /* vis : 이 토글이 의미 있는 화면에서만 보이게 / tip : 마우스를 올리면 나오는 설명 */
+        var SV = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+        var TICON = [SV + '<path d="M9 2 16 5.5 9 9 2 5.5z"/><path d="M2 9l7 3.5L16 9M2 12.5 9 16l7-3.5"/></svg>',
+          SV + '<rect x="3.5" y="2" width="11" height="14" rx="2"/><path d="M6.5 5.5h5M6.5 9h1M10.5 9h1M6.5 12.5h1M10.5 12.5h1"/></svg>',
+          SV + '<path d="M9 16s5-4.6 5-8.5A5 5 0 0 0 4 7.5C4 11.4 9 16 9 16z"/><circle cx="9" cy="7.5" r="1.8"/></svg>',
+          SV + '<path d="M2 14a7 7 0 0 1 14 0"/><circle cx="9" cy="7" r="1.6"/><path d="M1 14h16"/></svg>',
+          SV + '<path d="M15 9a6 6 0 1 1-2-4.5"/><path d="M15 2.5v3h-3"/></svg>'];
         function tog(label, init, fn, tip, vis) {
           var l = document.createElement("label"), i = document.createElement("input");
           i.type = "checkbox"; i.checked = init; i.onchange = function () { fn(i.checked); };
-          l.title = tip || ""; l.appendChild(i); l.appendChild(document.createTextNode(label)); TG.appendChild(l);
+          l.title = tip || ""; l.dataset.tip = label; l.appendChild(i);
+          var ic = document.createElement("span"); ic.className = "ic"; ic.innerHTML = TICON[TGS.length] || ""; l.appendChild(ic);
+          var tx = document.createElement("span"); tx.className = "tx"; tx.textContent = label; l.appendChild(tx); TG.appendChild(l);
           TGS.push({ el: l, vis: vis || function () { return true; } });
         }
         tog("계획 블록 표시", true, function (v) { planGroup.visible = v; render(); },
@@ -3118,8 +3254,40 @@
           dS.value = doy; update();
         };
       });
+["bar", "bl", "vsplit"].forEach(function (id) {
+        var el = document.getElementById(id); if (!el) return;
+        ["pointerdown", "wheel", "dblclick", "contextmenu"].forEach(function (ev) { el.addEventListener(ev, function (e) { e.stopPropagation(); }); });
+      });
+document.getElementById("pickCard").addEventListener("click", function (e) {
+        if (e.target && e.target.id === "goLiving") setMode(mode === "living" ? "aerial" : "living");
+      });
       var playBtn = document.getElementById("play");
-      function playLabel() { playBtn.textContent = playing ? "정지" : (mode === "living" ? "햇빛 하루 재생" : "해 돌리기"); }
+      function setPlay(t) { playBtn.title = t; playBtn.setAttribute("aria-label", t); playBtn.dataset.s = (t === "정지") ? "stop" : "play"; }
+      function drawDock(a) {
+        var c = document.getElementById("dockCv"); if (!c || !c.clientWidth) return;
+        var W = c.clientWidth, H = c.clientHeight, g = c.getContext("2d");
+        c.width = Math.round(W * devicePixelRatio); c.height = Math.round(H * devicePixelRatio);
+        g.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); g.clearRect(0, 0, W, H);
+        var P = 10, base = H - 8, top = 6;
+        function X(m) { return P + (m - 300) / 900 * (W - 2 * P); }
+        function Y(alt) { return base - Math.max(0, alt) / 80 * (base - top); }
+        g.beginPath(); g.moveTo(X(300), base);
+        for (var m = 300; m <= 1200; m += 10) g.lineTo(X(m), Y(sunPos(msOf(doy, m)).alt));
+        g.lineTo(X(1200), base); g.closePath(); g.fillStyle = "rgba(232,89,12,.10)"; g.fill();
+        g.beginPath();
+        for (var m2 = 300; m2 <= 1200; m2 += 10) { var y = Y(sunPos(msOf(doy, m2)).alt); if (m2 === 300) g.moveTo(X(m2), y); else g.lineTo(X(m2), y); }
+        g.strokeStyle = "#E8590C"; g.lineWidth = 1.8; g.stroke();
+        g.fillStyle = "#D9DDE3"; g.fillRect(P, base, W - 2 * P, 3);
+        if (a && a.seg) {            /* 선택한 세대 창에 직사광이 드는 시간대 */
+          g.fillStyle = "#E8590C";
+          a.seg.forEach(function (s) { if (s[1] === 2 && s[0] >= 300 && s[0] <= 1200) g.fillRect(X(s[0]) - 0.5, base, (W - 2 * P) / 180 + 1, 3); });
+        }
+        g.fillStyle = "#0E1116"; g.fillRect(X(minute) - 0.8, top - 4, 1.6, base - top + 6);
+        [].forEach.call(document.querySelectorAll(".presets button[data-day]"), function (b) {
+          b.classList.toggle("on", dateLabel(doy) === ({ "동지": "12월 22일", "춘분": "3월 20일", "하지": "6월 21일" })[b.getAttribute("data-day")]);
+        });
+      }
+      function playLabel() { setPlay(playing ? "정지" : (mode === "living" ? "햇빛 하루 재생" : "해 돌리기")); }
       /* 그 날 해가 떠 있는 구간 */
       function dayBounds(d) {
         var a = null, b = null;
@@ -3131,7 +3299,7 @@
         if (mode === "living") {
           var bd = dayBounds(doy), f = 0;
           minute = bd[0]; tS.value = minute; update();
-          playBtn.textContent = "정지";
+          setPlay("정지");
           playing = requestAnimationFrame(function step() {
             f++;
             if (f % 2 === 0) {
@@ -3141,7 +3309,7 @@
             playing = requestAnimationFrame(step);
           });
         } else {
-          playBtn.textContent = "정지";
+          setPlay("정지");
           (function step() {
             minute += 4; if (minute > 1200) minute = 300; tS.value = minute; update();
             playing = requestAnimationFrame(step);
@@ -3486,10 +3654,12 @@
         if (curListing >= 0) {
           var L = LISTINGS[curListing];
           pc.hidden = false;
-          pc.innerHTML = '<div class="hd"><span class="tag" style="background:' + TCOL[cxOf(L[0]) + "-" + L[2]] + '">' + (cxOf(L[0]) === "K" ? "1차" : "2차") + ' 84' + L[2] + '</span>' +
-            '<span class="ttl">' + L[0] + '동 ' + (isNaN(parseInt(L[1], 10)) ? L[1] + '층 · 추정 ' + hosu(L[0], L[9], L[8]) : hosu(L[0], L[9], L[8]) + ' · ' + L[1] + '층') + '</span>' +
-            '<span class="pp">P ' + L[4].toLocaleString() + '만</span></div>' +
-            '<div class="sub">중개사 ' + L[6] + '곳 등록<br>' + L[7] + '</div>' + priceHTML(L);
+          var wasOpen = !!(pc.querySelector("details") && pc.querySelector("details").open), estF = isNaN(parseInt(L[1], 10));
+          pc.innerHTML = '<div class="hd"><span class="tag"><i style="background:' + TCOL[cxOf(L[0]) + "-" + L[2]] + '"></i>' + (cxOf(L[0]) === "K" ? "스카이" : "스텔라") + ' 84' + L[2] + '</span><span class="brk">중개사 ' + L[6] + '곳 등록</span></div>' +
+            '<div class="ttl">' + L[0] + '동 ' + hosu(L[0], L[9], L[8]) + '</div>' +
+            '<div class="sub">' + (estF ? L[1] + '층대 · ' + L[9] + '층·호수는 추정' : L[1] + '층') + ' · 거실 ' + compassKo(u.bear) + '향 ' + u.bear.toFixed(0) + '° · P ' + L[4].toLocaleString() + '만</div>' +
+            (L[7] ? '<div class="desc">' + L[7] + '</div>' : '') + priceHTML(L);
+          if (wasOpen) pc.querySelector("details").open = true;
         } else { pc.hidden = true; }
 
         document.getElementById("unitTag").textContent = cxKo(u.dong) + " " + u.dong + "동 " + hosu(u.dong, cur.floor, u.line);
@@ -3505,7 +3675,7 @@
         document.getElementById("sunHours").textContent = (a.total / 60).toFixed(1) + "h";
         document.getElementById("contHours").textContent = (a.best / 60).toFixed(1) + "h";
         document.getElementById("kwh").textContent = a.kwh.toFixed(1);
-        drawTimeline(a); drawSky(a, u);
+        drawTimeline(a); drawSky(a, u); drawDock(a);
 
         var sv = document.getElementById("sunVerdict"), msg, cls;
         if (a.total < 1) { cls = "poor"; msg = "이 날 이 창으로는 직사광이 안 들어와. 향이 태양 궤적을 벗어나거나 앞동에 완전히 가려."; }
@@ -3712,8 +3882,10 @@
         el.hidden = false;
         el.style.transform = "translate(" + Math.round(x) + "px," + Math.round(y) + "px)";
         el.classList.toggle("below", y < 125);
-        el.classList.toggle("right", x > W - 200);
         var c = el.querySelector(".card"); c.querySelector("b").textContent = SELTAG.t1; c.querySelector("span").textContent = SELTAG.t2;
+        /* 카드가 화면 밖으로 잘리지 않게 좌우 위치를 화면 안으로 당김 */
+        var cw = c.offsetWidth || 200, lx = Math.max(8, Math.min(W - cw - 8, x - 14));
+        c.style.left = Math.round(lx - x) + "px"; c.style.right = "auto";
       }
       var _panAnim = 0;
       function panTo(x, z) {
